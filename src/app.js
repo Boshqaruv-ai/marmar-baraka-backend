@@ -84,7 +84,11 @@ const csrfProtection = (req, res, next) => {
   let token = req.cookies['XSRF-TOKEN'];
   if (!token) {
     token = crypto.randomBytes(32).toString('hex');
-    res.cookie('XSRF-TOKEN', token, { httpOnly: false, secure: process.env.NODE_ENV === 'production', sameSite: 'lax' });
+    res.cookie('XSRF-TOKEN', token, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+    });
   }
   res.set('X-CSRF-Token', token);
 
