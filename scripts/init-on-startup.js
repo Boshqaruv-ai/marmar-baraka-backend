@@ -96,11 +96,24 @@ const initDatabaseOnStartup = async () => {
           updated_at TIMESTAMP DEFAULT NOW()
         );
 
+        CREATE TABLE IF NOT EXISTS reviews (
+          id SERIAL PRIMARY KEY,
+          product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
+          user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+          rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+          comment TEXT,
+          is_approved BOOLEAN DEFAULT false,
+          created_at TIMESTAMP DEFAULT NOW(),
+          updated_at TIMESTAMP DEFAULT NOW()
+        );
+
         CREATE INDEX IF NOT EXISTS idx_products_deleted_at ON products(deleted_at);
         CREATE INDEX IF NOT EXISTS idx_orders_user_id ON orders(user_id);
         CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
         CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id);
         CREATE INDEX IF NOT EXISTS idx_cart_items_user_id ON cart_items(user_id);
+        CREATE INDEX IF NOT EXISTS idx_reviews_product_id ON reviews(product_id);
+        CREATE INDEX IF NOT EXISTS idx_reviews_user_id ON reviews(user_id);
       `);
 
       logger.info('Database schema updated successfully');
