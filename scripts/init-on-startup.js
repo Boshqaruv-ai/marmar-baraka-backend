@@ -34,7 +34,15 @@ const initDatabaseOnStartup = async () => {
     `);
 
     if (result.rows[0].exists) {
-      logger.info('Database already initialized, skipping');
+      logger.info('Database already initialized, checking for missing columns...');
+
+      // Add last_login column if missing
+      await pool.query(`
+        ALTER TABLE users
+        ADD COLUMN IF NOT EXISTS last_login TIMESTAMP;
+      `);
+
+      logger.info('Database schema updated');
       return;
     }
 
