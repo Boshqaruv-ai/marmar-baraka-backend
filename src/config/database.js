@@ -11,23 +11,35 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 
-const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT, 10) || 5432,
-  database: process.env.DB_NAME || 'marmar_baraka',
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || (process.env.NODE_ENV === 'production' ? undefined : 'postgres'),
-  // 1.4 — SSL mandatory in production
-  ssl: process.env.NODE_ENV === 'production'
-    ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false' }
-    : (process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false),
-  min: parseInt(process.env.DB_POOL_MIN, 10) || 2,
-  max: parseInt(process.env.DB_POOL_MAX, 10) || 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-  statement_timeout: 30000,
-  query_timeout: 30000,
-});
+const poolConfig = process.env.DATABASE_URL
+  ? {
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.NODE_ENV === 'production'
+        ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false' }
+        : false,
+      min: parseInt(process.env.DB_POOL_MIN, 10) || 2,
+      max: parseInt(process.env.DB_POOL_MAX, 10) || 20,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 2000,
+      statement_timeout: 30000,
+      query_timeout: 30000,
+    }
+  : {
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT, 10) || 5432,
+      database: process.env.DB_NAME || 'marmar_baraka',
+      user: process.env.DB_USER || 'postgres',
+      password: process.env.DB_PASSWORD || 'postgres',
+      ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
+      min: parseInt(process.env.DB_POOL_MIN, 10) || 2,
+      max: parseInt(process.env.DB_POOL_MAX, 10) || 20,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 2000,
+      statement_timeout: 30000,
+      query_timeout: 30000,
+    };
+
+const pool = new Pool(poolConfig);
 
 pool.on('connect', () => {
   logger.debug('New database connection established');
