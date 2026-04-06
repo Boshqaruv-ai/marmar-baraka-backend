@@ -60,6 +60,13 @@ const initDatabaseOnStartup = async () => {
         ALTER TABLE products ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMP;
       `);
 
+      // Add missing columns to order_items table
+      await pool.query(`
+        ALTER TABLE order_items ADD COLUMN IF NOT EXISTS product_name VARCHAR(255);
+        ALTER TABLE order_items ADD COLUMN IF NOT EXISTS unit_price DECIMAL(10, 2);
+        ALTER TABLE order_items ADD COLUMN IF NOT EXISTS total_price DECIMAL(10, 2);
+      `);
+
       // Create missing tables
       await pool.query(`
         CREATE TABLE IF NOT EXISTS orders (

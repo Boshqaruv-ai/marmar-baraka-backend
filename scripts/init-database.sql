@@ -107,9 +107,12 @@ CREATE TABLE IF NOT EXISTS order_items (
   id SERIAL PRIMARY KEY,
   order_id INTEGER REFERENCES orders(id) ON DELETE CASCADE,
   product_id INTEGER REFERENCES products(id) ON DELETE SET NULL,
+  product_name VARCHAR(255),
   quantity INTEGER NOT NULL,
   price DECIMAL(10, 2) NOT NULL,
+  unit_price DECIMAL(10, 2),
   total DECIMAL(10, 2) NOT NULL,
+  total_price DECIMAL(10, 2),
   created_at TIMESTAMP DEFAULT NOW()
 );
 
