@@ -44,10 +44,19 @@ const initDatabaseOnStartup = async () => {
         ALTER TABLE categories ADD COLUMN IF NOT EXISTS name_en VARCHAR(255);
         ALTER TABLE products ADD COLUMN IF NOT EXISTS name_uz VARCHAR(255);
         ALTER TABLE products ADD COLUMN IF NOT EXISTS name_en VARCHAR(255);
+        ALTER TABLE products ADD COLUMN IF NOT EXISTS category VARCHAR(100);
+        ALTER TABLE products ADD COLUMN IF NOT EXISTS color VARCHAR(100);
+        ALTER TABLE products ADD COLUMN IF NOT EXISTS description_uz TEXT;
+        ALTER TABLE products ADD COLUMN IF NOT EXISTS description_en TEXT;
         ALTER TABLE products ADD COLUMN IF NOT EXISTS price_per_m2 DECIMAL(10, 2);
+        ALTER TABLE products ADD COLUMN IF NOT EXISTS currency VARCHAR(10) DEFAULT 'UZS';
         ALTER TABLE products ADD COLUMN IF NOT EXISTS stock_m2 DECIMAL(10, 2);
         ALTER TABLE products ADD COLUMN IF NOT EXISTS min_order_m2 DECIMAL(10, 2);
         ALTER TABLE products ADD COLUMN IF NOT EXISTS thumbnail_url VARCHAR(500);
+        ALTER TABLE products ADD COLUMN IF NOT EXISTS image_urls JSONB;
+        ALTER TABLE products ADD COLUMN IF NOT EXISTS model_3d_url VARCHAR(500);
+        ALTER TABLE products ADD COLUMN IF NOT EXISTS views_count INTEGER DEFAULT 0;
+        ALTER TABLE products ADD COLUMN IF NOT EXISTS sales_count INTEGER DEFAULT 0;
         ALTER TABLE products ADD COLUMN IF NOT EXISTS deleted_at TIMESTAMP;
       `);
 
