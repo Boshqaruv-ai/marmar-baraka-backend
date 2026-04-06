@@ -17,7 +17,8 @@
     "migrate:rollback": "node database/rollback.js",
     "seed": "node database/run-seeds.js",
     "db:backup": "node scripts/backup-db.js",
-    "db:restore": "node scripts/restore-db.js"
+    "db:restore": "node scripts/restore-db.js",
+    "db:init": "node scripts/init-db.js"
   },
   "keywords": [
     "marble",
