@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
   is_verified BOOLEAN DEFAULT false,
   failed_login_attempts INTEGER DEFAULT 0,
   locked_until TIMESTAMP,
+  last_login TIMESTAMP,
   deleted_at TIMESTAMP,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
