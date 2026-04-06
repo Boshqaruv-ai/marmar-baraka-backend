@@ -35,7 +35,6 @@ const initDatabaseOnStartup = async () => {
 
     if (result.rows[0].exists) {
       logger.info('Database already initialized, skipping');
-      await pool.end();
       return;
     }
 
