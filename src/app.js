@@ -111,7 +111,13 @@ app.use(errorHandler);
 
 const startServer = async () => {
   try {
-    await redis.connect();
+    // Try to connect to Redis, but don't fail if unavailable
+    try {
+      await redis.connect();
+      logger.info('Redis connected successfully');
+    } catch (redisError) {
+      logger.warn('Redis connection failed, continuing without Redis', { error: redisError.message });
+    }
 
     app.listen(PORT, () => {
       logger.info(`Server running on port ${PORT}`, {
