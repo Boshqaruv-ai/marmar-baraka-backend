@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "buildCommand": "npm install && npm run build",
+  "outputDirectory": "dist",
+  "framework": "express",
+  "functions": {
+    "src/index.js": {
+      "memory": 1024,
+      "maxDuration": 60,
+      "runtime": "nodejs18.x"
+    }
+  },
+  "env": {
+    "NODE_ENV": "production",
+    "DB_HOST": "@db_host",
+    "DB_PORT": "@db_port",
+    "DB_USER": "@db_user",
+    "DB_PASSWORD": "@db_password",
+    "DB_NAME": "@db_name",
+    "REDIS_URL": "@redis_url",
+    "JWT_SECRET": "@jwt_secret",
+    "JWT_REFRESH_SECRET": "@jwt_refresh_secret",
+    "SENDGRID_API_KEY": "@sendgrid_api_key",
+    "CORS_ORIGIN": "@cors_origin"
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "src/index.js",
+      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"]
+    }
+  ]
+}
