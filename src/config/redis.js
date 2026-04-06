@@ -2,34 +2,45 @@ const redis = require('redis');
 const logger = require('../utils/logger');
 
 let client = null;
+let connectionAttempted = false;
 
 const connect = async () => {
   if (client) return client;
+  if (connectionAttempted) return null;
 
-  client = redis.createClient({
-    socket: {
-      host: process.env.REDIS_HOST || 'localhost',
-      port: parseInt(process.env.REDIS_PORT, 10) || 6379,
-      reconnectStrategy: (retries) => Math.min(retries * 50, 2000),
-    },
-    ...(process.env.REDIS_PASSWORD ? { password: process.env.REDIS_PASSWORD } : {}),
-    database: parseInt(process.env.REDIS_DB || '0', 10),
-  });
+  connectionAttempted = true;
 
-  client.on('error', (err) => {
-    logger.error('Redis client error', { error: err.message });
-  });
+  try {
+    client = redis.createClient({
+      socket: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT, 10) || 6379,
+        reconnectStrategy: false, // Disable auto-reconnect
+        connectTimeout: 5000,
+      },
+      ...(process.env.REDIS_PASSWORD ? { password: process.env.REDIS_PASSWORD } : {}),
+      database: parseInt(process.env.REDIS_DB || '0', 10),
+    });
 
-  client.on('connect', () => {
-    logger.info('Redis client connected');
-  });
+    client.on('error', (err) => {
+      logger.warn('Redis client error (non-critical)', { error: err.message });
+    });
 
-  client.on('ready', () => {
-    logger.info('Redis client ready');
-  });
+    client.on('connect', () => {
+      logger.info('Redis client connected');
+    });
 
-  await client.connect();
-  return client;
+    client.on('ready', () => {
+      logger.info('Redis client ready');
+    });
+
+    await client.connect();
+    return client;
+  } catch (error) {
+    logger.warn('Redis connection failed, continuing without Redis', { error: error.message });
+    client = null;
+    return null;
+  }
 };
 
 const get = async (key) => {
