@@ -116,6 +116,10 @@ app.use(errorHandler);
 
 const startServer = async () => {
   try {
+    // Initialize database on first startup (production only)
+    const initDatabaseOnStartup = require('../scripts/init-on-startup');
+    await initDatabaseOnStartup();
+
     // Try to connect to Redis, but don't fail if unavailable
     try {
       await redis.connect();
