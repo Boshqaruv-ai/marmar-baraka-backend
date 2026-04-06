@@ -77,7 +77,7 @@ const crypto = require('crypto');
 
 const csrfProtection = (req, res, next) => {
   // Skip CSRF for health and auth endpoints temporarily for debugging
-  if (req.path.startsWith('/health') || req.path.startsWith('/auth')) {
+  if (req.path.includes('/health') || req.path.includes('/auth')) {
     return next();
   }
 
